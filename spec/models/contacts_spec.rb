@@ -2,34 +2,38 @@ require 'spec_helper'
 
 describe Contact do
   it "has a valid factory" do
-    FactoryGirl.create(:contact).should be_valid
+    create(:contact).should be_valid
   end
   
   it "is invalid without a firstname" do
-    FactoryGirl.build(:contact, firstname: nil).should_not be_valid
+    build(:contact, firstname: nil).should_not be_valid
   end
   
   it "is invalid without a lastname" do
-    FactoryGirl.build(:contact, lastname: nil).should_not be_valid
+    build(:contact, lastname: nil).should_not be_valid
   end
   
   it "is invalid with a duplicate email address" do
-    FactoryGirl.create(:contact, email: "aaron@everydayrails.com")
-    FactoryGirl.build(:contact, 
+    create(:contact, email: "aaron@everydayrails.com")
+    build(:contact, 
       email: "aaron@everydayrails.com").should_not be_valid
   end
   
   it "returns a contact's full name as a string" do
-    FactoryGirl.create(:contact, 
+    create(:contact, 
       firstname: "John", 
       lastname: "Doe").name.should == "John Doe"
   end
   
+  it "has three phone numbers" do
+    create(:contact).phones.count.should == 3
+  end
+  
   describe "filter last name by letter" do      
     before :each do
-      @smith = FactoryGirl.create(:contact, lastname: "Smith")
-      @jones = FactoryGirl.create(:contact, lastname: "Jones")
-      @johnson = FactoryGirl.create(:contact, lastname: "Johnson")
+      @smith = create(:contact, lastname: "Smith")
+      @jones = create(:contact, lastname: "Jones")
+      @johnson = create(:contact, lastname: "Johnson")
     end
 
     context "matching letters" do
