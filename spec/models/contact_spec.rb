@@ -5,6 +5,10 @@ describe Contact do
     create(:contact).should be_valid
   end
   
+  it "has an invalid factory" do
+    build(:invalid_contact).should_not be_valid
+  end
+  
   it "is invalid without a firstname" do
     build(:contact, firstname: nil).should_not be_valid
   end
@@ -43,7 +47,7 @@ describe Contact do
     end
     
     context "non-matching letters" do
-      it "does not return contacts that don't start with the provided letter" do
+      it "doesn't return contacts that don't start with a given letter" do
         Contact.by_letter("J").should_not include @smith
       end
     end
