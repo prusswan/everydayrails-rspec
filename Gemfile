@@ -27,14 +27,15 @@ gem 'bcrypt-ruby', '~> 3.0.0'
 
 gem "cancan", "~> 1.6.7"
 
-# To use Jbuilder templates for JSON
-# gem 'jbuilder'
+group :development, :test do
+  gem "rspec-rails", "~> 2.10.1"
+  gem "factory_girl_rails", "~> 3.2.0"
+  gem "guard-rspec", "~> 0.7.0"
+end
 
-# Use unicorn as the app server
-# gem 'unicorn'
-
-# Deploy with Capistrano
-# gem 'capistrano'
-
-# To use debugger
-# gem 'ruby-debug19', :require => 'ruby-debug'
+group :test do
+  gem "faker", "~> 1.0.1"
+  gem "capybara", "~> 1.1.2"
+  gem "database_cleaner", "~> 0.7.2"
+  gem "launchy", "~> 2.1.0"
+end
