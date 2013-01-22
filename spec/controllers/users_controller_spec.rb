@@ -4,17 +4,17 @@ describe UsersController do
   describe 'guest access' do
     it "GET#index redirects to the login form" do
       get :index
-      response.should redirect_to login_url
+      response.should require_login
     end
     
     it "GET#new redirects to the login form" do
       get :new
-      response.should redirect_to login_url
+      response.should require_login
     end
     
     it "POST#create redirects to the login form" do
       post :create, user: attributes_for(:user)
-      response.should redirect_to login_url
+      response.should require_login
     end
     
   end
@@ -26,17 +26,17 @@ describe UsersController do
     
     it "GET#index denies access" do
       get :index
-      response.should redirect_to root_url
+      response.should deny_access
     end
     
     it "GET#new denies access" do
       get :new
-      response.should redirect_to root_url
+      response.should deny_access
     end
     
     it "POST#create denies access" do
       post :create, user: attributes_for(:user)
-      response.should redirect_to root_url
+      response.should deny_access
     end
   end
   
