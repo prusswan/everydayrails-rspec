@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe UsersController do
+  
+  let(:user) { create(:user) }
+  let(:admin) { create(:admin) }
+  
   describe 'guest access' do
     it "GET#index redirects to the login form" do
       get :index
@@ -15,13 +19,12 @@ describe UsersController do
     it "POST#create redirects to the login form" do
       post :create, user: attributes_for(:user)
       response.should require_login
-    end
-    
+    end 
   end
   
   describe 'user access' do
     before :each do
-      session[:user_id] = create(:user).id
+      session[:user_id] = user.id
     end
     
     it "GET#index denies access" do
@@ -42,15 +45,15 @@ describe UsersController do
   
   describe 'admin access' do
     before :each do
-      @admin = create(:admin)
-      session[:user_id] = @admin.id
+      session[:user_id] = admin.id
     end
     
     describe 'GET#index' do
       it "collects users into @users" do
-        user = create(:user)
+        admin
+        user
         get :index
-        assigns(:users).should == [@admin,user]
+        assigns(:users).should == [admin,user]
       end
       
       it "renders the :index template" do
@@ -84,7 +87,17 @@ describe UsersController do
           response.should redirect_to users_url
         end
       end
-      
+    end
+    
+    describe 'GET#show' do
+      it "assigns the user to @user" do
+        new_user = double(User)
+        new_user.stub(:new_record?) { false }
+        new_user.stub(:admin?) { false }
+        User.stub(:find) { new_user }
+        get :show, id: new_user.to_param
+        assigns(:user).should == new_user
+      end
     end
     
   end

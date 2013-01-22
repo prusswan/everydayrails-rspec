@@ -1,55 +1,45 @@
 require 'spec_helper'
 
 describe Contact do
-  it "has a valid factory" do
-    create(:contact).should be_valid
-  end
-  
-  it "has an invalid factory" do
-    build(:invalid_contact).should_not be_valid
-  end
-  
-  it "is invalid without a firstname" do
-    build(:contact, firstname: nil).should_not be_valid
-  end
-  
-  it "is invalid without a lastname" do
-    build(:contact, lastname: nil).should_not be_valid
-  end
-  
-  it "is invalid with a duplicate email address" do
-    create(:contact, email: "aaron@everydayrails.com")
-    build(:contact, 
-      email: "aaron@everydayrails.com").should_not be_valid
-  end
-  
-  it "returns a contact's full name as a string" do
-    create(:contact, 
-      firstname: "John", 
-      lastname: "Doe").name.should == "John Doe"
-  end
-  
-  it "has three phone numbers" do
-    create(:contact).phones.count.should == 3
-  end
-  
-  describe "filter last name by letter" do      
-    before :each do
-      @smith = create(:contact, lastname: "Smith")
-      @jones = create(:contact, lastname: "Jones")
-      @johnson = create(:contact, lastname: "Johnson")
+  RSpec::Matchers.define :be_named do |expected|
+    match do |actual|
+      actual.name == expected
     end
-
+    description do
+      "return a full name as a string"
+    end
+  end
+    
+  subject{ create(:contact, firstname: "John", lastname: "Doe") }
+  it { should be_named 'John Doe' }
+  it { should have(3).phones }  
+  specify { subject.should validate_presence_of :firstname }
+  specify { subject.should validate_presence_of :lastname }
+  specify { subject.should validate_presence_of :email }
+  specify { subject.should validate_uniqueness_of :email }  
+    
+  describe "filter last name by letter" do      
+    let!(:smith) { create(:contact, lastname: "Smith") }
+    let!(:jones) { create(:contact, lastname: "Jones") }
+    let!(:johnson) { create(:contact, lastname: "Johnson") }
+    
     context "matching letters" do
       it "returns a sorted array of results that match" do
-        Contact.by_letter("J").should == [@johnson, @jones]
+        Contact.by_letter("J").should == [johnson, jones]
       end
     end
     
     context "non-matching letters" do
       it "doesn't return contacts that don't start with a given letter" do
-        Contact.by_letter("J").should_not include @smith
+        Contact.by_letter("J").should_not include smith
       end
     end
   end
+  
+  
+  let(:contact) { create(:contact) }
+  let(:invalid_contact) { build(:invalid_contact) }
+  
+  specify{ contact.should be_valid }
+  specify{ invalid_contact.should_not be_valid }
 end

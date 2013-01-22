@@ -30,12 +30,15 @@ gem "cancan", "~> 1.6.7"
 group :development, :test do
   gem "rspec-rails", "~> 2.10.1"
   gem "factory_girl_rails", "~> 3.2.0"
-  gem "guard-rspec", "~> 0.7.0"
+  gem "guard-rspec", "~> 0.7.3"
 end
 
 group :test do
+  gem "shoulda-matchers"
   gem "faker", "~> 1.0.1"
   gem "capybara", "~> 1.1.2"
   gem "database_cleaner", "~> 0.7.2"
   gem "launchy", "~> 2.1.0"
+  gem "spork", "~> 0.9.2"
+  gem "guard-spork", "~> 0.8.0"
 end
